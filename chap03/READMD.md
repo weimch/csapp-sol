@@ -61,3 +61,113 @@ remdiv:
 - C. pop是400545, ja是400543
 - D. 0x400560
 
+### 3.16
+- A.
+  ```c
+  void cond(long a, long *p) {
+    if(p == 0)
+      goto done
+    if (*p >= a)
+      goto done
+    *p = a;
+  done:
+    return;
+  }
+  ```
+- B. 第一个条件分支语句检查p是否为空，为空则跳过比较检查。
+
+### 3.17
+A.
+```c
+long gotodiff_se(long x, long y) {
+  long result;
+  if (x < y)
+    goto true;
+  ge_cnt++;
+  result = x - y;
+true:
+  lt_cnt++;
+  result = y - x;
+done:
+  return result;
+}
+```
+B. 大多数情况下，可以在这两种方式中任意选择，但原来的方法对于没有else语句的情况要好些，如下：
+```c
+t = test-expr;
+if (!t)
+  goto done
+then-statement
+done:
+```
+
+### 3.18
+- x + y + z
+- x < -3
+- y < z
+- val = x * y
+- val = y * z
+- x > 2
+- val = x * z
+
+### 3.19
+A. `0.5*16 + (1-0.5)*(16+x)=31 -> x = 30`
+B. `30+16=46`
+
+### 3.20
+A. `/`
+B. 这个程序创建一个临时值等于x+7，预期x为负，需要加偏移量时使用。cmovns指令在当x>=0条件成立时把临时值修改为x，然后再移动3位，得到x/8
+```assembly
+long arith(long x)
+x in %rdi
+
+arith
+  leaq    7(%rdi), %rax   temp = x+7
+  testq   %rdi, %rdi      Test x
+  cmovns  %rdi, %rax      If x >= 0, temp = x
+  sarq    $3, %rax        result = temp >> 3 (= x / 8)
+```
+
+### 3.21
+- `8*y`
+- `y > 0`
+- `x >= y`
+- `x&y`
+- `y-x`
+- `y <= -2`
+- `x+y`
+
+### 3.22
+A. 13
+B. 20
+
+### 3.23
+- A. x->%rax, y->%rcx, n->%rdx
+- B. 使用`leaq 1(%rcx, %rax), %rax`完成
+
+### 3.24
+- `1`
+- `a < b`
+- `(a+b)*result`
+- `a+1`
+
+### 3.25
+- `b`
+- `b > 0`
+- `result * a`
+- `b - a`
+
+### 3.26
+A. guarded-do
+B. 
+  ```c
+  long func_a(unsigned long x) {
+    long val = 0;
+    while (x != 0) {
+      val = val ^ x;
+      x = x >> 1;
+    }
+    return val & 1;
+  }
+  ```
+C. 计算x的奇偶性
