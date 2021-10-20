@@ -171,3 +171,67 @@ B.
   }
   ```
 C. 计算x的奇偶性
+
+### 3.27
+```c
+long fact_for_gd_goto(long n) {
+  long i = 2;
+  long result = 1;
+  if (n <= 1)
+    goto done;
+loop:
+  result *= i;
+  i++;
+  if (i <= n)
+    goto loop;
+done:
+  return result;
+}
+```
+
+### 3.28
+A.
+  ```c
+  long func_b(unsigned long x) {
+    long val = 0;
+    long i;
+    for (i = 64; i != 0; --i) {
+      val = (val << 1) | (x & 0x1);
+      x >>= 1;
+    }
+  }
+  ```
+B. 这段代码是用guarded-do变换生成的，但是编译器发现因为i初始化成了64，所以一定会满足i不等于0，因此初始化的测试是没有必要的。
+C. 将x中的位反转过来
+
+### 3.29
+A. i得不到更新，代码将会无限循环。
+  ```c
+  long sum = 0;
+  long i = 0;
+  while (i < 10) {
+    if (i & 1)
+      continue
+    sum += i;
+    i++;
+   }
+  ```
+B. 使用goto语句替代continue语句，跳过循环余下部分
+  ```c
+  long sum = 0;
+  long i = 0;
+  while (i < 10) {
+    if (i & 1)
+      goto update;
+    sum += 1;
+  update:
+    i++;
+  }
+  ```
+
+3.30
+- A. -1, 0, 1, 2, 4, 5, 7
+- B. 目标为.L5情况标号为0和7
+- C. 目标为.L7情况标号为2和4
+
+
